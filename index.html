@@ -48,9 +48,23 @@ body{overflow:hidden}
   padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
   display:flex; flex-direction:column; overflow:hidden;
 }
-.screen{display:none; padding:12px 14px 16px; animation:fade .25s ease}
-.screen.on{display:block; flex:1 1 auto; min-height:0;
-  overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain}
+.screen{display:none; padding:16px 14px 12px; animation:fade .25s ease}
+.screen.on{display:flex; flex-direction:column; flex:1 1 auto; min-height:0; overflow:hidden}
+.screen.on > *{flex:0 0 auto}
+/* 各画面でここだけが伸び縮みしてスクロールする。
+   画面ごと動かすと、下のボタンが浮いたり画面の下が塗りつぶされたりするのでやめた */
+#s-select > #styleHero,
+#s-howto  > #howtoBody,
+#s-hall   > #hallBody,
+#s-result > #resBody,
+#s-race   > .raceScroll,
+#s-entry  > .entryTbl,
+#s-rres   > .entryTbl{
+  flex:1 1 auto; min-height:0;
+  overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
+}
+/* 育成（ハイアンドロー・振り分け）は中身が JS で入れ替わるので画面ごと動かす */
+#s-train.on{display:block; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
 /* ---- 共通パーツ ---- */
@@ -80,13 +94,12 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .btn.sm{padding:10px;font-size:13px}
 .btn[disabled]{opacity:.35;pointer-events:none}
 .row{display:flex;gap:9px}
-/* 主要なボタンは下端に貼り付けて、長い画面でもスクロールなしで押せるようにする */
-.stick{position:sticky;z-index:20;bottom:calc(env(safe-area-inset-bottom,0px) + 6px);
-  filter:drop-shadow(0 6px 18px rgba(0,0,0,.75))}
-/* 枠線だけのボタンが並ぶ行は、後ろの文字が透けないように下地を敷く */
-.row.stick{bottom:0;margin-left:-14px;margin-right:-14px;filter:none;
-  padding:10px 14px calc(env(safe-area-inset-bottom,0px) + 8px);
-  background:linear-gradient(180deg,rgba(12,21,17,0) 0,var(--bg) 32%)}
+/* 以前は position:sticky で画面の下端に貼り付けていたが、
+   スクロールから外れて浮いて見えるうえ、下に敷いたグラデーションが
+   画面の下を塗りつぶしてしまうのでやめた。
+   いまは各画面が収まるようにしてあるので、普通に並べるだけでよい */
+.stick{position:static;filter:none}
+.row.stick{position:static;margin-left:0;margin-right:0;padding:0;background:none;filter:none}
 .row>*{flex:1}
 
 /* ---- タイトル（起動スプラッシュ） ---- */
@@ -108,7 +121,7 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .splash-foot{
   /* 下端ギリギリだとブラウザのツールバーと干渉して押しにくい。
      ホームバーぶんの余白は #app 側ですでに取ってあるのでここでは足さない */
-  padding:196px 20px 48px;
+  padding:188px 20px 32px;
   text-align:center;
   background:linear-gradient(to top,
     rgba(8,20,14,.97) 0%, rgba(8,20,14,.93) 26%,
@@ -136,6 +149,9 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .silks{width:92px;height:92px;margin:22px auto 20px;position:relative}
 
 /* ---- 装飾枠 ---- */
+/* ハイアンドローは札と状態表で縦に長くなるので、この画面だけ枠の余白を詰める */
+#s-train .orn{padding:11px;margin-bottom:9px}
+#s-train .roundPips{margin-bottom:4px}
 .orn{position:relative;border:1px solid rgba(232,194,104,.42);border-radius:13px;
   background:linear-gradient(180deg,#15291e 0%,#0e1d15 100%);
   box-shadow:0 8px 26px rgba(0,0,0,.45);padding:13px;margin-bottom:12px}
@@ -158,6 +174,11 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .ornHead .s{font-size:10px;letter-spacing:.22em;color:var(--dim2);margin-top:5px}
 
 /* ---- 脚質セレクタ ---- */
+/* 馬選択は1画面に収めたいので、この画面だけ余白を詰める */
+#s-select > .ornHead{margin-bottom:2px}
+#s-select .namecard{padding:11px}
+#s-select #nameMsg{margin-top:6px;font-size:10px}
+#s-select .btnOrn{padding:13px}
 .segs{display:flex;gap:8px;margin-bottom:10px}
 .seg{flex:1;position:relative;border:1.5px solid rgba(232,194,104,.26);border-radius:11px;
   padding:9px 4px 8px;background:linear-gradient(180deg,#16281d,#0f1f17);
@@ -174,7 +195,7 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .hero2{padding:0;overflow:hidden;animation:heroIn .24s ease}
 @keyframes heroIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .hero2::after{inset:4px;border-radius:9px}
-.banner{position:relative;height:92px;overflow:hidden;border-radius:12px 12px 0 0}
+.banner{position:relative;height:66px;overflow:hidden;border-radius:12px 12px 0 0}
 .banner img{width:100%;height:100%;object-fit:cover;object-position:center 46%;display:block}
 .banner .tint{position:absolute;inset:0}
 .banner .fade{position:absolute;inset:0;
@@ -186,22 +207,22 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
   padding:5px 11px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.06em;
   border:1px solid;background:rgba(8,18,13,.86)!important;
   box-shadow:0 2px 10px rgba(0,0,0,.6)}
-.hero2 .stats{display:flex;gap:9px;padding:9px 12px 0;align-items:center}
-.hero2 canvas{flex:none;width:112px;height:112px}
+.hero2 .stats{display:flex;gap:9px;padding:7px 12px 0;align-items:center}
+.hero2 canvas{flex:none;width:98px;height:98px}
 .hero2 .list{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
-.statRow{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:8px;
+.statRow{display:flex;align-items:center;gap:7px;padding:4px 8px;border-radius:8px;
   background:rgba(255,255,255,.035);border:1px solid rgba(232,194,104,.13)}
 .statRow .nm{flex:1;font-size:11.5px;color:var(--dim)}
 .statRow .v{font-family:var(--f-num);font-size:12.5px;color:var(--txt)}
-.posbar2{display:flex;align-items:center;gap:8px;padding:9px 13px 0}
+.posbar2{display:flex;align-items:center;gap:8px;padding:7px 13px 0}
 .posbar2 .lab{font-size:10px;color:var(--dim2);flex:none}
 .posbar2 .track{flex:1;height:15px;border-radius:8px;background:#0a120e;position:relative;
   border:1px solid rgba(232,194,104,.18)}
 .posbar2 .fill{position:absolute;top:1px;bottom:1px;border-radius:7px}
 .posbar2 .mk{position:absolute;top:50%;transform:translate(-50%,-50%);color:#fff;
   filter:drop-shadow(0 1px 3px rgba(0,0,0,.8))}
-.hero2 .desc{padding:12px 14px 0;font-size:11.5px;line-height:1.72;color:var(--dim)}
-.hero2 .weak{padding:5px 14px 13px;font-size:10.5px;line-height:1.62;color:#8a6f52}
+.hero2 .desc{padding:10px 14px 0;font-size:11.5px;line-height:1.58;color:var(--dim)}
+.hero2 .weak{padding:4px 14px 8px;font-size:10.5px;line-height:1.5;color:#8a6f52}
 
 /* 飾り罫つきの見出し（馬名など、中央に置きたいもの） */
 .secOrn{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 9px}
@@ -214,7 +235,7 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 
 /* ---- 馬名入力 ---- */
 .namecard .nameRow{display:flex;gap:9px;align-items:stretch}
-.nameRow input{flex:1;min-width:0;padding:11px 10px;border-radius:10px;
+.nameRow input{flex:1;min-width:0;padding:10px;border-radius:10px;
   border:1px solid rgba(232,194,104,.3);background:#0a120e;color:var(--txt);
   font-size:17px;font-family:var(--f-ser);letter-spacing:.1em;text-align:center}
 .nameRow input:focus{outline:none;border-color:var(--gold)}
@@ -388,9 +409,9 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .stFoot .nx{color:var(--gold);font-family:var(--f-ser);font-size:13px;letter-spacing:.06em}
 
 /* ---- あきらめる ---- */
-.giveUp{display:block;width:100%;margin-top:9px;padding:10px;border-radius:10px;
-  border:1px solid rgba(200,136,107,.3);background:transparent;
-  color:#8a6f52;font-size:12.5px;letter-spacing:.06em}
+.giveUp{display:block;width:100%;margin-top:14px;padding:13px;border-radius:10px;
+  border:1px solid rgba(200,136,107,.42);background:transparent;
+  color:#9a7c5c;font-size:13px;font-weight:600;letter-spacing:.06em}
 .giveUp:active{background:rgba(200,136,107,.1)}
 .giveUpBox{margin-top:14px;padding:13px;border-radius:11px;
   border:1px solid rgba(226,87,76,.5);background:rgba(226,87,76,.08);text-align:center}
@@ -430,7 +451,9 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .nextRace .chips i{font-style:normal;font-size:11px;color:var(--dim2)}
 
 /* ポイントが余ったままの確認（あきらめ確認と同じ作りの金色版） */
-.giveUpBox.ask{border-color:rgba(232,194,104,.5);background:rgba(232,194,104,.08)}
+.giveUpBox.ask{border-color:rgba(232,194,104,.5);background:rgba(232,194,104,.08);
+  margin-top:10px;padding:11px}
+.giveUpBox.ask p{margin:0 0 9px;line-height:1.55}
 .giveUpBox.ask p{color:#e6dcc4}
 .giveUpBox.ask p b{font-family:var(--f-num);font-size:16px;color:var(--gold)}
 .giveUpBox.ask .yes{border-color:var(--gold);color:#17251d;font-weight:700;
@@ -488,6 +511,11 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
   #s-entry .tblWrap{max-height:min(440px, max(200px, calc(100dvh - 404px)))}
   #s-rres  .tblWrap{max-height:min(400px, max(190px, calc(100dvh - 480px)))}
 }
+/* 画面を flex で組むようにしたので、表は決め打ちの高さではなく
+   「画面の余り」をそのまま使う。スクロールするのはこの表の中だけ */
+#s-entry > .entryTbl, #s-rres > .entryTbl{
+  display:flex; flex-direction:column; overflow:hidden; min-height:110px}
+#s-entry .tblWrap, #s-rres .tblWrap{flex:1 1 auto; min-height:0; max-height:none}
 .tblWrap .tbl th{position:sticky;top:0;z-index:2;background:var(--panel);
   box-shadow:0 1px 0 var(--line)}
 .entryTbl::after{content:'';position:absolute;left:7px;right:7px;bottom:1px;height:26px;
@@ -693,7 +721,7 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
       <svg width="20" height="20" viewBox="0 0 24 24"><path d="M6 3.5v7.5a6 6 0 0 0 12 0V3.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
       この馬で育成をはじめる
     </button>
-    <div style="height:10px"></div>
+    <div style="height:6px"></div>
     <button class="btn ghost sm" onclick="G.show('title')">↩ タイトルへ戻る</button>
   </section>
 
@@ -729,8 +757,11 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
       <button id="sp2" onclick="G.setSpeed(2)">▷ 2倍速</button>
       <button id="sp3" onclick="G.skipToFinal()">☆ 直線から</button>
     </div>
-    <div class="live" id="rcLive"></div>
-    <div id="rcTicket"></div>
+    <!-- 実況中に動く上半分は固定したいので、順位表と馬券だけをまとめてスクロールさせる -->
+    <div class="raceScroll">
+      <div class="live" id="rcLive"></div>
+      <div id="rcTicket"></div>
+    </div>
   </section>
 
   <!-- ========== レース結果 ========== -->
@@ -1639,7 +1670,7 @@ renderHL:function(){
   var rHi = this.riskName(o.hi.p), rLo = this.riskName(o.lo.p);
   var shown = t.result ? (t.result==='lose'?'miss':'hit') : '';
 
-  h+='<div class="ornHead" style="margin:0 0 7px">'
+  h+='<div class="ornHead" style="margin:0 0 0">'
     +svg('crown',20,'var(--gold)')
     +'<div class="h"><i></i><div class="t" style="font-size:19px">'+t.title+'</div><i></i></div>'
     +'<div class="s">ROUND '+(t.round+1)+' / '+t.rounds+'</div>'
@@ -1848,7 +1879,9 @@ renderAlloc:function(){
     +'<button class="btn ghost sm" onclick="G.allocReset()">リセット</button></div>';
   h+='</div>';
 
-  /* 次走。求められる力は順位つきの札にして、何を伸ばすかを即断できるようにする */
+  /* 次走。求められる力は順位つきの札にして、何を伸ばすかを即断できるようにする。
+     ポイント余りの確認が出ているあいだは、画面に収めるためこの札を省く */
+  if(!t.confirmLeft){
   var nx=this.nextCourse(), hp=nx.hint.split('：');
   var toks=(hp[1]||'').split(/\s+/), j, first=true;
   h+='<div class="card nextRace">'
@@ -1861,6 +1894,7 @@ renderAlloc:function(){
     else { h+='<b'+(first?' class="top"':'')+'>'+tk+'</b>'; first=false; }
   }
   h+='</div></div>';
+  }
 
   var stuck = (left>0 && this.allocRoom()<=0);
   if(stuck){
