@@ -49,7 +49,12 @@ body{overflow:hidden}
   display:flex; flex-direction:column; overflow:hidden;
 }
 .screen{display:none; padding:16px 14px 12px; animation:fade .25s ease}
-.screen.on{display:flex; flex-direction:column; flex:1 1 auto; min-height:0; overflow:hidden}
+/* overflow は hidden ではなく auto にしておく。
+   hidden だと入りきらなかったぶんがスクロールバーも出ずに切り落とされ、
+   「下が塗りつぶされている」ように見えてしまう。
+   ふだんは下の伸縮領域が余りを吸うので、画面ごと動くことはない */
+.screen.on{display:flex; flex-direction:column; flex:1 1 auto; min-height:0;
+  overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain}
 .screen.on > *{flex:0 0 auto}
 /* 各画面でここだけが伸び縮みしてスクロールする。
    画面ごと動かすと、下のボタンが浮いたり画面の下が塗りつぶされたりするのでやめた */
@@ -57,14 +62,21 @@ body{overflow:hidden}
 #s-howto  > #howtoBody,
 #s-hall   > #hallBody,
 #s-result > #resBody,
-#s-race   > .raceScroll,
 #s-entry  > .entryTbl,
 #s-rres   > .entryTbl{
   flex:1 1 auto; min-height:0;
   overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
 }
-/* 育成（ハイアンドロー・振り分け）は中身が JS で入れ替わるので画面ごと動かす */
-#s-train.on{display:block; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain}
+#s-select > #styleHero{min-height:150px}
+#s-howto  > #howtoBody, #s-hall > #hallBody, #s-result > #resBody{min-height:120px}
+/* 育成（ハイアンドロー・振り分け）は中身が JS で入れ替わる。
+   短いときは上下の余りを等分して、上だけが窮屈にならないようにする。
+   中身がはみ出したときは auto マージンが 0 になるので、普通にスクロールできる */
+#s-train > #trBody{margin-top:auto; margin-bottom:auto}
+/* 「STEP 2 ・…」の行が右上の音楽ボタンの下に潜っていたので、その幅だけ空ける */
+#s-train > #trBody > .card:first-child .sec{padding-right:42px}
+/* レース中は馬券まで入れると縦に長い。切り落とさず画面ごと動かす */
+#s-race.on{display:block}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
 /* ---- 共通パーツ ---- */
