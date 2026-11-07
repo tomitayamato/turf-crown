@@ -63,20 +63,30 @@ body{overflow:hidden}
 #s-hall   > #hallBody,
 #s-result > #resBody,
 #s-entry  > .entryTbl,
+#s-race   > .raceScroll,
 #s-rres   > .entryTbl{
   flex:1 1 auto; min-height:0;
   overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
 }
 #s-select > #styleHero{min-height:150px}
 #s-howto  > #howtoBody, #s-hall > #hallBody, #s-result > #resBody{min-height:120px}
-/* 育成（ハイアンドロー・振り分け）は中身が JS で入れ替わる。
-   短いときは上下の余りを等分して、上だけが窮屈にならないようにする。
-   中身がはみ出したときは auto マージンが 0 になるので、普通にスクロールできる */
-#s-train > #trBody{margin-top:auto; margin-bottom:auto}
-/* 「STEP 2 ・…」の行が右上の音楽ボタンの下に潜っていたので、その幅だけ空ける */
+/* 育成の中身は JS で入れ替わる。上下中央に置くと、札を選んだ瞬間に
+   中身の高さが変わって画面全体がずれてしまうので、上から順に積む。
+   余った高さはハイアンドローの札の枠（.hlStage）が吸うので、
+   その下にある状態表と「育成をあきらめる」は動かない。 */
+#s-train > #trBody{flex:1 0 auto; display:flex; flex-direction:column}
+#s-train .hlStage{flex:1 1 auto}
+/* 振り分けは最初の要素が横いっぱいの札で、右上の音楽ボタンと重なる。
+   ハイアンドロー側は中央に紋章があるだけなので、この札のときだけ空ける */
+/* 空けられる高さがあるときだけ空ける。Safari のようにツールバーで
+   縦が短いときは 16px に戻るので、余計なスクロールを生まない */
+#s-train > #trBody > .card:first-child{margin-top:16px}
+@supports (height:100dvh){
+  #s-train > #trBody > .card:first-child{margin-top:clamp(16px, calc(100dvh - 800px), 46px)}
+}
 #s-train > #trBody > .card:first-child .sec{padding-right:42px}
-/* レース中は馬券まで入れると縦に長い。切り落とさず画面ごと動かす */
-#s-race.on{display:block}
+/* 振り分けは「出走へ進む」を下端に寄せて、下の余りをなくす */
+#s-train > #trBody > .btn:last-child{margin-top:auto}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
 /* ---- 共通パーツ ---- */
@@ -303,7 +313,7 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .hlMeta{text-align:center;font-size:10.5px;color:var(--dim2);letter-spacing:.04em;margin-bottom:8px}
 .hlMeta b{color:var(--gold);font-family:var(--f-num);font-size:12.5px}
 
-.cardRow{display:flex;align-items:center;justify-content:center;gap:16px;margin:2px 0}
+.cardRow{display:flex;align-items:center;justify-content:center;gap:16px;margin:0}
 .pcard2{width:98px;height:110px;border-radius:13px;position:relative;flex:none;
   display:flex;align-items:center;justify-content:center;
   background:linear-gradient(160deg,#fdfaf0,#e9e0c8);
@@ -336,9 +346,9 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .cardCap span{width:98px;text-align:center;font-size:10px;color:var(--dim2);letter-spacing:.08em}
 .cardCap i{width:34px;flex:none}   /* VS と同じ幅。札の真下に来るようにする */
 
-.pot2{text-align:center;margin:8px 0 2px}
+.pot2{text-align:center;margin:5px 0 2px}
 .pot2 .lab{font-size:9.5px;letter-spacing:.2em;color:var(--dim2)}
-.pot2 .v{font-family:var(--f-num);font-size:38px;font-weight:700;line-height:1.05;
+.pot2 .v{font-family:var(--f-num);font-size:34px;font-weight:700;line-height:1.05;
   background:linear-gradient(180deg,#fff6dc,#e8c268 48%,#b8902f);
   -webkit-background-clip:text;background-clip:text;color:transparent;
   filter:drop-shadow(0 2px 12px rgba(232,194,104,.34))}
@@ -349,7 +359,7 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .pot2.inline{margin:0;display:flex;align-items:baseline;gap:8px}
 .pot2.inline .lab{letter-spacing:.14em}
 .pot2.inline .v{font-size:40px}
-.streak{display:inline-flex;align-items:center;gap:7px;margin-top:8px;padding:5px 14px;
+.streak{display:inline-flex;align-items:center;gap:7px;margin-top:3px;padding:3px 12px;
   border-radius:20px;background:rgba(232,194,104,.12);border:1px solid rgba(232,194,104,.45);
   font-size:11px;color:var(--gold);animation:streakPulse 1.6s ease-in-out infinite}
 @keyframes streakPulse{0%,100%{box-shadow:0 0 0 0 rgba(232,194,104,0)}
@@ -357,7 +367,7 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .streak .mul{font-family:var(--f-num);font-size:15px;font-weight:700}
 .streak .stars{letter-spacing:1px}
 
-.betRow{display:flex;gap:10px;margin-top:11px}
+.betRow{display:flex;gap:10px;margin-top:8px}
 .bet{flex:1;position:relative;border-radius:13px;padding:9px 8px 9px;text-align:center;
   border:1.5px solid;overflow:hidden;transition:transform .08s,filter .15s}
 .bet:active{transform:scale(.97);filter:brightness(1.15)}
@@ -373,11 +383,11 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .bet.lo .dir,.bet.lo .pay{color:#8ccaf5}
 
 .cashBtn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;
-  padding:14px;border-radius:11px;font-size:15px;font-weight:700;letter-spacing:.06em;
+  padding:9px;border-radius:11px;font-size:14.5px;font-weight:700;letter-spacing:.06em;
   border:1.5px solid var(--gold);color:var(--gold);
   background:linear-gradient(180deg,rgba(232,194,104,.16),rgba(232,194,104,.05))}
 .cashBtn:active{transform:scale(.985);filter:brightness(1.2)}
-.hlWarn{text-align:center;font-size:10.5px;color:#c8886b;margin-top:9px;line-height:1.6}
+.hlWarn{text-align:center;font-size:10px;color:#c8886b;margin-top:5px;line-height:1.45}
 .hlResult{text-align:center;font-family:var(--f-ser);font-size:26px;letter-spacing:.1em;margin:12px 0 4px}
 .hlAnswer{text-align:center;font-size:11.5px;color:var(--dim);margin-bottom:10px;line-height:1.7}
 
@@ -1746,8 +1756,7 @@ renderHL:function(){
     if(t.streak>0){
       h+='<button class="cashBtn" onclick="G.hlStop()">'+svg('dia',13)
         +'ここでやめて ＋'+t.acc+' を確定する</button>'
-        +'<div class="hlWarn">失敗するとこのラウンドの上乗せは全て消えます<br>'
-        +'（元手の '+t.total+' は残ります）</div>';
+        +'<div class="hlWarn">失敗すると上乗せは消えます（元手の '+t.total+' は残ります）</div>';
     }
   } else if(t.result==='hit'){
     h+='<div class="hlResult" style="color:var(--gold)">的中！</div></div>';
