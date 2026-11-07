@@ -707,6 +707,16 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .title-badge{text-align:center;font-family:var(--f-ser);font-size:25px;letter-spacing:.14em;margin:4px 0 2px;
   background:linear-gradient(180deg,#fff6dc,#e8c268 50%,#a07a22);-webkit-background-clip:text;background-clip:text;color:transparent}
 .scoreBig{text-align:center;font-family:var(--f-num);font-size:34px;font-weight:700;color:var(--gold);line-height:1.1}
+/* 総合スコアのすぐ下に置く、総獲得賞金の帯 */
+.prizeLine{display:flex;align-items:baseline;justify-content:center;gap:13px;
+  margin:10px 0 2px;padding:9px 12px;border-radius:10px;
+  border:1px solid rgba(232,194,104,.38);
+  background:linear-gradient(180deg,rgba(232,194,104,.15),rgba(232,194,104,.035))}
+.prizeLine .k{font-size:10.5px;letter-spacing:.2em;color:var(--gold2);white-space:nowrap}
+.prizeLine .v{font-family:var(--f-ser);font-size:23px;font-weight:600;letter-spacing:.04em;line-height:1.1;
+  background:linear-gradient(180deg,#fff6dc,#e8c268 52%,#b8902f);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 2px 10px rgba(232,194,104,.28))}
 .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:#0a120ee8;border:1px solid var(--line2);
   color:var(--txt);padding:9px 16px;border-radius:20px;font-size:12px;z-index:50;pointer-events:none;
   opacity:0;transition:opacity .2s}
@@ -880,7 +890,7 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
    ホーム画面に追加した iOS のアプリは HTML を強くキャッシュして、
    古いまま起動し続けることがある。起動のたびに新しい版が出ていないか
    確かめて、違っていたら読み直す。 */
-var BUILD = '20261107-1556';
+var BUILD = '20261107-1613';
 (function(){
   try{
     fetch(location.pathname + '?cb=' + Date.now(), {cache:'no-store'})
@@ -2176,6 +2186,8 @@ finalResult:function(){
 
   h+='<div class="card"><div class="sec">総合スコア</div>'
     +'<div class="scoreBig">'+score.total.toLocaleString()+'</div>'
+    +'<div class="prizeLine"><span class="k">総獲得賞金</span>'
+    +'<span class="v">'+fmtMoney(this.prize)+'</span></div>'
     +'<div style="margin-top:8px">'
     +'<div class="kv"><span class="k">着順点</span><span class="v">'+score.rank.toLocaleString()+'</span></div>'
     +'<div class="kv"><span class="k">タイム点</span><span class="v">'+score.time.toLocaleString()+'</span></div>'
@@ -2208,8 +2220,7 @@ finalResult:function(){
       +(r.prize?'<div class="tiny" style="color:var(--gold2);margin-top:1px">獲得賞金 '+fmtMoney(r.prize)+'</div>':'')
       +'</div>';
   }
-  h+='<div class="kv" style="margin-top:8px"><span class="k">総獲得賞金</span>'
-    +'<span class="v" style="color:var(--gold);font-size:15px">'+fmtMoney(this.prize)+'</span></div></div>';
+  h+='</div>';
 
   $('resBody').innerHTML=h;
   this.saveHall(ttl, score.total, tot, four);
@@ -2229,7 +2240,10 @@ calcScore:function(four){
   st*=12;
   /* 上限で振れなかったポイントは、能力1と同じ重みで拾う（カンストが損にならないように） */
   var sp = (this.spare||0)*12;
-  var mn = Math.round(this.prize/50);
+  /* 賞金の効きを 1/50 から 1/10 へ（5倍）。
+     四冠で 2,260 → 11,300 となり、着順点12,000とほぼ並ぶ重みになる。
+     賞金は着順でしか増えないので、強い馬ほど素直に伸びる。 */
+  var mn = Math.round(this.prize/10);
   var bn = four?30000:(this.crowns>=3?12000:(this.crowns===2?3000:0));
   return {rank:rk, time:tm, stat:st, spare:sp, money:mn, bonus:bn,
           total:rk+tm+st+sp+mn+bn};
