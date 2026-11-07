@@ -83,7 +83,10 @@ body{overflow:hidden}
   overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
 }
 #s-title  > .splash{flex:1 1 auto; min-height:0}
-#s-select > #styleHero{min-height:150px}
+/* 縦に余ったぶんは空白にせず、脚質カードの写真を伸ばして埋める */
+#s-select > #styleHero{min-height:150px; display:flex; flex-direction:column}
+#s-select > #styleHero > .hero2{flex:1 1 auto; display:flex; flex-direction:column}
+#s-select > #styleHero > .hero2 > .banner{flex:1 1 auto; min-height:66px}
 #s-howto  > #howtoBody, #s-hall > #hallBody, #s-result > #resBody{min-height:120px}
 /* 育成の中身は JS で入れ替わる。上下中央に置くと、札を選んだ瞬間に
    中身の高さが変わって画面全体がずれてしまうので、上から順に積む。
@@ -157,7 +160,7 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .splash-foot{
   /* 下端ギリギリだとブラウザのツールバーと干渉して押しにくい。
      ホームバーぶんの余白は #app 側ですでに取ってあるのでここでは足さない */
-  padding:188px 20px calc(32px + env(safe-area-inset-bottom,0px));
+  padding:188px 20px calc(12px + env(safe-area-inset-bottom,0px));
   text-align:center;
   background:linear-gradient(to top,
     rgba(8,20,14,.97) 0%, rgba(8,20,14,.93) 26%,
@@ -172,9 +175,13 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 }
 .tapStart i{display:block;height:1px;width:38px;background:rgba(243,225,174,.75);flex:none}
 @keyframes tapPulse{0%,100%{opacity:1}50%{opacity:.52}}
-.splash-shoe{margin:9px auto 0;display:block;opacity:.85}
-.splash-links{margin-top:14px;font-size:13px;color:rgba(214,230,218,.78);letter-spacing:.08em}
-.splash-links button{color:inherit;font-size:inherit;padding:11px 18px;letter-spacing:inherit}
+.splash-shoe{margin:6px auto 0;display:block;opacity:.85}
+/* タイトルの題字に合わせて明朝・字間広めにし、少し大きくした */
+.splash-links{margin-top:10px;font-family:var(--f-ser);font-size:15.5px;font-weight:600;
+  color:rgba(243,231,201,.84);letter-spacing:.18em;
+  text-shadow:0 1px 3px rgba(0,0,0,.9), 0 2px 12px rgba(0,0,0,.7)}
+.splash-links button{color:inherit;font-family:inherit;font-size:inherit;font-weight:inherit;
+  padding:12px 20px;letter-spacing:inherit}
 .splash-links button:active{color:var(--gold)}
 .splash-links .sep{opacity:.4}
 #title{padding-top:52px;text-align:center}
@@ -187,6 +194,9 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 /* ---- 装飾枠 ---- */
 /* ハイアンドローは札と状態表で縦に長くなるので、この画面だけ枠の余白を詰める */
 #s-train .orn{padding:9px;margin-bottom:8px}
+/* 枠を縦の箱にして、余った高さを「TAP で次へ」の上下に等分させる */
+#s-train .hlStage{display:flex;flex-direction:column}
+#s-train .hlStage > *{flex:0 0 auto}
 #s-train .ornHead .t{font-size:19px}
 #s-train .ornHead .s{margin-top:3px}
 #s-train .roundPips{margin-bottom:2px}
@@ -230,8 +240,9 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
   width:0;height:0;border:8px solid transparent;border-top-color:var(--gold)}
 
 /* ---- 脚質ヒーローカード ---- */
-.hero2{padding:0;overflow:hidden;animation:heroIn .24s ease}
-@keyframes heroIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* 脚質を切り替えるたびに下からせり上がる動きが入っていたが、
+   毎回カードが跳ねて見えるのでやめた。切り替えは即座に */
+.hero2{padding:0;overflow:hidden}
 .hero2::after{inset:4px;border-radius:9px}
 .banner{position:relative;height:66px;overflow:hidden;border-radius:12px 12px 0 0}
 .banner img{width:100%;height:100%;object-fit:cover;object-position:center 46%;display:block}
@@ -259,11 +270,13 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .posbar2 .fill{position:absolute;top:1px;bottom:1px;border-radius:7px}
 .posbar2 .mk{position:absolute;top:50%;transform:translate(-50%,-50%);color:#fff;
   filter:drop-shadow(0 1px 3px rgba(0,0,0,.8))}
-.hero2 .desc{padding:10px 14px 0;font-size:11.5px;line-height:1.58;color:var(--dim)}
-.hero2 .weak{padding:4px 14px 8px;font-size:10.5px;line-height:1.5;color:#8a6f52}
+.hero2 .desc{padding:10px 14px 0;font-size:12px;line-height:1.62;color:#dbe8dd}
+.hero2 .weak{padding:5px 14px 9px;font-size:11px;line-height:1.55;color:#d8a87a}
 
 /* 飾り罫つきの見出し（馬名など、中央に置きたいもの） */
 .secOrn{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 9px}
+/* 「馬名」は枠の中ではなく上に出す */
+.nameHead{margin:4px 0 7px}
 .secOrn i{height:1px;flex:1;max-width:60px;
   background:linear-gradient(90deg,transparent,rgba(232,194,104,.75))}
 .secOrn i:last-child{transform:scaleX(-1)}
@@ -404,6 +417,28 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
   background:linear-gradient(180deg,rgba(232,194,104,.16),rgba(232,194,104,.05))}
 .cashBtn:active{transform:scale(.985);filter:brightness(1.2)}
 .hlWarn{text-align:center;font-size:9.5px;color:#c8886b;margin-top:4px;line-height:1.4}
+/* いまのポイントの内訳（枠のいちばん下に置く） */
+.ptBox{margin-top:9px;padding:8px 10px;border-radius:10px;
+  border:1px solid rgba(232,194,104,.28);background:rgba(232,194,104,.055)}
+.ptBox .row3{display:flex;align-items:flex-end;justify-content:center;gap:7px}
+.ptBox .c{display:flex;flex-direction:column;align-items:center;gap:1px;min-width:62px}
+.ptBox .k{font-size:9px;letter-spacing:.06em;color:var(--dim2);white-space:nowrap}
+.ptBox .v{font-family:var(--f-num);font-size:20px;font-weight:700;line-height:1;color:var(--txt)}
+.ptBox .v.up{color:#5fc98a}
+.ptBox .v.tot{color:var(--gold)}
+.ptBox .op{font-family:var(--f-num);font-size:14px;color:var(--dim2);line-height:1;padding-bottom:3px}
+.ptBox .note{text-align:center;font-size:10.5px;color:var(--dim);margin-top:6px}
+.ptBox .note b{font-family:var(--f-num);font-size:13.5px;color:var(--gold)}
+.ptBox .only{display:flex;align-items:baseline;justify-content:center;gap:11px}
+.ptBox .only .k{font-size:11px;letter-spacing:.08em;color:var(--dim)}
+.ptBox .only .v{font-size:22px;color:var(--gold)}
+/* 的中のあと、どこを触っても進めることを伝える。ふわっと出てゆっくり明滅する */
+.tapNext{margin:auto 0;text-align:center;font-family:var(--f-ser);font-size:14px;
+  letter-spacing:.3em;text-indent:.3em;color:#f3e3b4;
+  text-shadow:0 2px 10px rgba(0,0,0,.85);
+  animation:tapNextIn .85s ease both, tapPulse 2.2s ease-in-out .85s infinite}
+@keyframes tapNextIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.tapCatch{position:fixed;inset:0;z-index:40;cursor:pointer;background:transparent}
 .hlResult{text-align:center;font-family:var(--f-ser);font-size:26px;letter-spacing:.1em;margin:12px 0 4px}
 .hlAnswer{text-align:center;font-size:11.5px;color:var(--dim);margin-bottom:10px;line-height:1.7}
 
@@ -417,18 +452,19 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .roundBig .tot{font-family:var(--f-num);font-size:22px;color:var(--dim)}
 
 /* ---- 現在の能力パネル ---- */
-.statusCard{padding:9px 11px 9px}
-.stGrid{display:grid;grid-template-columns:1fr 1fr;gap:3px 12px}
-.stCell{display:flex;align-items:center;gap:6px;padding:1px 0}
+/* ラウンド終わりの黄色いボタンをやめたぶん、この枠を広く取って読みやすくした */
+.statusCard{padding:12px 12px 12px}
+.stGrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px}
+.stCell{display:flex;align-items:center;gap:7px;padding:4px 0}
 .stCell .ic{flex:none;opacity:.85}
-.stCell .lb{font-size:11px;color:var(--dim)}
-.stCell .gr{margin-left:auto;font-family:var(--f-num);font-size:12.5px}
+.stCell .lb{font-size:12px;color:var(--dim)}
+.stCell .gr{margin-left:auto;font-family:var(--f-num);font-size:13.5px}
 .stHead{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:5px;
   padding-bottom:6px;border-bottom:1px solid rgba(232,194,104,.18)}
 .stHead i{height:1px;flex:1;max-width:52px;
   background:linear-gradient(90deg,transparent,rgba(232,194,104,.75))}
 .stHead i:last-child{transform:scaleX(-1)}
-.stHead .nm{font-family:var(--f-ser);font-size:17px;letter-spacing:.1em;white-space:nowrap;
+.stHead .nm{font-family:var(--f-ser);font-size:18px;letter-spacing:.1em;white-space:nowrap;
   overflow:hidden;text-overflow:ellipsis;
   background:linear-gradient(180deg,#fff6dc,#e8c268 55%,#b8902f);
   -webkit-background-clip:text;background-clip:text;color:transparent}
@@ -441,8 +477,9 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .stRow .bar i{display:block;height:100%;border-radius:4px;
   background:linear-gradient(90deg,#2f7a50,#5fc98a);transition:width .4s}
 .stRow .gr{width:44px;text-align:right;font-family:var(--f-num);font-size:11.5px;flex:none}
-.stFoot{display:flex;justify-content:space-between;align-items:baseline;margin-top:7px;
-  padding-top:8px;border-top:1px solid rgba(232,194,104,.18);font-size:11px;color:var(--dim2)}
+.stFoot{display:flex;justify-content:space-between;align-items:baseline;margin-top:9px;
+  padding-top:9px;border-top:1px solid rgba(232,194,104,.18);font-size:11.5px;color:var(--dim2)}
+.stFoot .nxc{color:var(--dim);font-family:var(--f-num);font-size:11.5px;margin-left:6px}
 .stFoot b{font-family:var(--f-num);font-size:13px;color:var(--txt)}
 .stFoot .nx{color:var(--gold);font-family:var(--f-ser);font-size:13px;letter-spacing:.06em}
 
@@ -576,12 +613,14 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .raceHead .s{font-size:10px;letter-spacing:.16em;color:var(--dim2);margin-top:4px}
 
 /* ---- 単勝馬券（実際の勝馬投票券の券面を参考にした意匠） ---- */
-.ticket{position:relative;width:100%;margin-top:14px;aspect-ratio:1330/797;
+/* 馬券の縦は幅で決まる（1330:797）。レース画面で一度に収めるため幅を抑える */
+
+.ticket{position:relative;width:100%;margin-top:12px;aspect-ratio:1330/797;
   background:#fcfcf6;color:#0c0c0c;overflow:hidden;border-radius:3px;
   font-family:var(--f-sans);font-weight:800;line-height:1;
   font-size:10px;
   box-shadow:0 12px 30px rgba(0,0,0,.6),0 0 0 1px rgba(0,0,0,.4)}
-#rcTicket{container-type:inline-size}
+#rcTicket{container-type:inline-size;max-width:336px;margin-left:auto;margin-right:auto}
 @supports (font-size:1cqw){.ticket{font-size:2.88cqw}}
 .ticket .bd{position:absolute;inset:0;background:linear-gradient(90deg,
   transparent 0 5.8%,#b2e9ec 5.8% 9.8%,transparent 9.8% 33.2%,#b2e9ec 33.2% 38.2%,transparent 38.2%)}
@@ -747,9 +786,9 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
     </div>
     <div class="segs" id="styleTabs"></div>
     <div id="styleHero"></div>
+    <div class="secOrn nameHead"><i></i><span>馬名</span><i></i></div>
     <div class="orn namecard">
       <span class="cn tl"></span><span class="cn tr"></span><span class="cn bl"></span><span class="cn br"></span>
-      <div class="secOrn"><i></i><span>馬名</span><i></i></div>
       <div class="nameRow">
         <input id="hname" maxlength="9" placeholder="カタカナ９文字まで">
         <button class="diceBtn" onclick="G.randomName()">🎲<span>ランダム</span></button>
@@ -841,7 +880,7 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
    ホーム画面に追加した iOS のアプリは HTML を強くキャッシュして、
    古いまま起動し続けることがある。起動のたびに新しい版が出ていないか
    確かめて、違っていたら読み直す。 */
-var BUILD = '20261107-1257';
+var BUILD = '20261107-1556';
 (function(){
   try{
     fetch(location.pathname + '?cb=' + Date.now(), {cache:'no-store'})
@@ -1667,6 +1706,7 @@ startTraining:function(){
   var nx = this.nextCourse();
   this.tr.title = isFinal ? '最終調整' : '育成';
   this.tr.nextName = nx.name;
+  this.tr.nextCond = nx.surface + nx.distance + 'm';
   this.show('train');
   this.newRound();
 },
@@ -1701,7 +1741,8 @@ statusPanel:function(){
   h+='<div class="stFoot">'
     +'<span class="sty" style="color:'+st.color+';background:'+st.color+'22">'+st.label+'</span>'
     +'<span>合計 <b>'+tot+'</b></span>'
-    +'<span>次走 <span class="nx">'+this.tr.nextName+'</span></span></div></div>';
+    +'<span>次走 <span class="nx">'+this.tr.nextName+'</span>'
+    +'<span class="nxc">'+(this.tr.nextCond||'')+'</span></span></div></div>';
   return h;
 },
 
@@ -1745,8 +1786,6 @@ renderHL:function(){
     +'<span class="cn tl"></span><span class="cn tr"></span>'
     +'<span class="cn bl"></span><span class="cn br"></span>';
 
-  h+='<div class="hlMeta" style="margin-top:2px">確定済み <b>'+t.total+'</b></div>';
-
   /* 場の2枚 */
   h+='<div class="cardRow">'
     +'<div class="pcard2'+(t.result?' '+shown:'')+'">'
@@ -1776,6 +1815,27 @@ renderHL:function(){
       +'余ったポイントは、最終スコアに加算されます。</div>';
   }
 
+  /* いまのポイントの内訳。枠の上にあった「確定済み」をここへ移した。
+     どの状態でも枠のいちばん下、同じ位置に出すので目が迷わない。
+     「やめる」ボタンが出ているときは、そこに同じ金額が書いてあるので一行を省く。 */
+  var accNow = (t.result==='lose' || t.result==='win') ? 0 : t.acc;
+  var hasCash = (!t.result && t.streak>0);
+  var tally;
+  if(accNow > 0){
+    tally = '<div class="ptBox"><div class="row3">'
+      + '<div class="c"><span class="k">所持ポイント</span><span class="v">'+t.total+'</span></div>'
+      + '<div class="op">＋</div>'
+      + '<div class="c"><span class="k">今回の上乗せ</span><span class="v up">'+accNow+'</span></div>'
+      + '<div class="op">＝</div>'
+      + '<div class="c"><span class="k">合計</span><span class="v tot">'+(t.total+accNow)+'</span></div>'
+      + '</div>'
+      + (hasCash ? '' : '<div class="note">ここでやめれば <b>'+(t.total+accNow)+'</b> が確定されます</div>')
+      + '</div>';
+  } else {
+    tally = '<div class="ptBox"><div class="only"><span class="k">現在の獲得ポイント</span>'
+      + '<span class="v">'+t.total+'</span></div></div>';
+  }
+
   if(!t.result){
     h+='<div class="betRow">'
       +'<div class="bet hi" onclick="G.hlPick(\'hi\')">'
@@ -1791,7 +1851,8 @@ renderHL:function(){
       +'<div class="pct">的中 '+Math.round(o.lo.p*100)+'%</div>'
       +'<div class="pay">＋'+gLo+'</div></div>'
       +'</div>'
-      +'<div class="hlMeta" style="margin:11px 0 0">裏の札は 1〜10（'+t.shown+'は出ません）。薄いほうほど配当が高い。</div>'
+      +'<div class="hlMeta" style="margin:9px 0 0">裏の札は 1〜10（'+t.shown+'は出ません）。薄いほうほど配当が高い。</div>'
+      + tally
       +'</div>';
     if(t.streak>0){
       h+='<button class="cashBtn" onclick="G.hlStop()">'+svg('dia',13)
@@ -1799,17 +1860,21 @@ renderHL:function(){
         +'<div class="hlWarn">失敗すると上乗せは消えます（元手の '+t.total+' は残ります）</div>';
     }
   } else if(t.result==='hit'){
-    h+='<div class="hlResult" style="color:var(--gold)">的中！</div></div>';
+    h+='<div class="hlResult" style="color:var(--gold)">的中！</div>' + tally
+      +'<div class="tapNext">TAP で次へ</div></div>';
+    /* 画面のどこを触っても次へ進む。音楽ボタンだけはこの上に出してある */
+    h+='<div class="tapCatch" onclick="G.hlContinue()"></div>';
   } else {
     var win=(t.result==='win');
     h+='<div class="hlResult" style="color:'+(win?'var(--gold)':'#e2574c')+'">'
       +(win?'＋'+t.acc+' を確定':'失敗')+'</div>';
     if(win) h+='<div class="hlAnswer">裏の札は <b style="color:var(--txt)">'+t.hidden+'</b> でした。'
       +'<b style="color:'+(t.wouldBe==='HIGH'?'#ff8b7f':'#8ccaf5')+'">'+t.wouldBe+'</b> なら的中。</div>';
-    else h+='<div class="hlAnswer">上乗せは消えました。元手の '+t.total+' は残ります。</div>';
-    h+='</div>';
-    h+='<button class="btnOrn" onclick="G.hlNext()">'
-      +(t.round+1>=t.rounds?'能力の振り分けへ':'ラウンド'+(t.round+2)+'へ')+'</button>';
+    else h+='<div class="hlAnswer">上乗せは消えました。</div>';
+    var nextLabel = (t.round+1>=t.rounds ? '能力の振り分けへ' : 'ラウンド'+(t.round+2)+'へ');
+    h+= tally + '<div class="tapNext">TAPして'+nextLabel+'</div></div>';
+    /* 黄色いボタンはやめ、画面のどこを触っても進むようにした */
+    h+='<div class="tapCatch" onclick="G.hlNext()"></div>';
   }
   h += this.statusPanel();
   if(t.giveUp){
@@ -1835,14 +1900,9 @@ hlPick:function(side){
     t.streak++;
     t.result='hit';
     BGM.cue('yay', 0, 0.26);
+    /* 以前はここで0.9秒後に自動で次の札へ進めていたが、
+       結果を読む間もなく画面が変わるので、ボタンを押して進む形にした */
     this.renderHL();
-    var self=this;
-    setTimeout(function(){
-      if(self.tr!==t || t.result!=='hit') return;
-      t.result=null; t.locked=false;
-      t.shown = t.hidden<2?2:(t.hidden>9?9:t.hidden);
-      self.renderHL(); self.flashCards();
-    }, 900);
   } else {
     t.result='lose'; t.acc=0;
     BGM.cue('aww', 0, 0.32);
@@ -1852,6 +1912,13 @@ hlPick:function(side){
 flashCards:function(){
   var c=document.querySelectorAll('#trBody .pcard'),i;
   for(i=0;i<c.length;i++){ c[i].classList.remove('flip'); void c[i].offsetWidth; c[i].classList.add('flip'); }
+},
+/* 的中の画面から、次の札へ進む */
+hlContinue:function(){
+  var t=this.tr; if(t.result!=='hit') return;
+  t.result=null; t.locked=false;
+  t.shown = t.hidden<2?2:(t.hidden>9?9:t.hidden);
+  this.renderHL(); this.flashCards();
 },
 hlStop:function(){
   var t=this.tr; if(t.locked||t.result) return;
@@ -2380,11 +2447,22 @@ function loopPointAt(c, d){
 /* ---------- コース全体図 ---------- */
 function drawMiniMap(cv, c, state, me, scale){
   var g=cv.getContext('2d'), W=cv.width, H=cv.height;
-  var P=buildLoopPath(c), pad=18*(scale||1);
+  /* レース画面のコース図は枠が薄いので、余白と文字の逃げを詰めて図を大きく使う */
+  var flat = !scale;
+  var P=buildLoopPath(c), pad=(flat?10:18)*(scale||1);
   g.clearRect(0,0,W,H);
-  var s=Math.min((W-pad*2)/P.w, (H-pad*2-10)/P.h);
-  var ox=(W-P.w*s)/2-P.minx*s, oy=(H-P.h*s)/2-P.miny*s+3;
-  function px(p){ return [p[0]*s+ox, p[1]*s+oy]; }
+  /* 薄い枠のときは縦横を別の倍率にして横幅を使い切る。
+     コース図は「いまどこを走っているか」を示す図なので、縦横比は厳密でなくてよい */
+  var sx, sy;
+  if(flat){
+    sx=(W-pad*2)/P.w;
+    sy=(H-pad*2-26)/P.h;
+    if(sy>sx) sy=sx;                     /* 縦に伸びすぎないように上限だけ付ける */
+  } else {
+    sx=sy=Math.min((W-pad*2)/P.w, (H-pad*2-10)/P.h);
+  }
+  var ox=(W-P.w*sx)/2-P.minx*sx, oy=(H-P.h*sy)/2-P.miny*sy+(flat?10:3);
+  function px(p){ return [p[0]*sx+ox, p[1]*sy+oy]; }
 
   /* コース */
   g.lineCap='round'; g.lineJoin='round';
@@ -3443,10 +3521,12 @@ G.startRace = function(){
 G.fitCanvas=function(){
   var a=$('cvTrack'), b=$('cvMap');
   var w=a.clientWidth||400;
-  a.height=Math.round(w*0.54*2); a.width=Math.round(w*2);
-  b.height=Math.round(w*0.44*2); b.width=Math.round(w*2);
-  a.style.height=Math.round(w*0.54)+'px';
-  b.style.height=Math.round(w*0.44)+'px';
+  /* 馬券まで一度に見せるため、縦を詰めてある。
+     0.54→0.46（馬の動き）／0.44→0.24（コース図）で合計約110px を空けた。 */
+  a.height=Math.round(w*0.46*2); a.width=Math.round(w*2);
+  b.height=Math.round(w*0.24*2); b.width=Math.round(w*2);
+  a.style.height=Math.round(w*0.46)+'px';
+  b.style.height=Math.round(w*0.24)+'px';
 };
 
 G.setSpeed=function(s){
