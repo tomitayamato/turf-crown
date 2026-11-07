@@ -176,8 +176,10 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 
 /* ---- 装飾枠 ---- */
 /* ハイアンドローは札と状態表で縦に長くなるので、この画面だけ枠の余白を詰める */
-#s-train .orn{padding:11px;margin-bottom:9px}
-#s-train .roundPips{margin-bottom:4px}
+#s-train .orn{padding:9px;margin-bottom:8px}
+#s-train .ornHead .t{font-size:19px}
+#s-train .ornHead .s{margin-top:3px}
+#s-train .roundPips{margin-bottom:2px}
 .orn{position:relative;border:1px solid rgba(232,194,104,.42);border-radius:13px;
   background:linear-gradient(180deg,#15291e 0%,#0e1d15 100%);
   box-shadow:0 8px 26px rgba(0,0,0,.45);padding:13px;margin-bottom:12px}
@@ -314,11 +316,11 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .roundPips i.on{background:var(--gold);border-color:var(--gold)}
 .roundPips i.cur{background:transparent;border-color:var(--gold);
   box-shadow:0 0 0 4px rgba(232,194,104,.14)}
-.hlMeta{text-align:center;font-size:10.5px;color:var(--dim2);letter-spacing:.04em;margin-bottom:8px}
+.hlMeta{text-align:center;font-size:10.5px;color:var(--dim2);letter-spacing:.04em;margin-bottom:3px}
 .hlMeta b{color:var(--gold);font-family:var(--f-num);font-size:12.5px}
 
 .cardRow{display:flex;align-items:center;justify-content:center;gap:16px;margin:0}
-.pcard2{width:98px;height:110px;border-radius:13px;position:relative;flex:none;
+.pcard2{width:86px;height:97px;border-radius:12px;position:relative;flex:none;
   display:flex;align-items:center;justify-content:center;
   background:linear-gradient(160deg,#fdfaf0,#e9e0c8);
   border:2px solid #fff;box-shadow:0 10px 26px rgba(0,0,0,.6)}
@@ -350,9 +352,9 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .cardCap span{width:98px;text-align:center;font-size:10px;color:var(--dim2);letter-spacing:.08em}
 .cardCap i{width:34px;flex:none}   /* VS と同じ幅。札の真下に来るようにする */
 
-.pot2{text-align:center;margin:5px 0 2px}
+.pot2{text-align:center;margin:3px 0 1px}
 .pot2 .lab{font-size:9.5px;letter-spacing:.2em;color:var(--dim2)}
-.pot2 .v{font-family:var(--f-num);font-size:34px;font-weight:700;line-height:1.05;
+.pot2 .v{font-family:var(--f-num);font-size:30px;font-weight:700;line-height:1.05;
   background:linear-gradient(180deg,#fff6dc,#e8c268 48%,#b8902f);
   -webkit-background-clip:text;background-clip:text;color:transparent;
   filter:drop-shadow(0 2px 12px rgba(232,194,104,.34))}
@@ -371,8 +373,8 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .streak .mul{font-family:var(--f-num);font-size:15px;font-weight:700}
 .streak .stars{letter-spacing:1px}
 
-.betRow{display:flex;gap:10px;margin-top:8px}
-.bet{flex:1;position:relative;border-radius:13px;padding:9px 8px 9px;text-align:center;
+.betRow{display:flex;gap:10px;margin-top:6px}
+.bet{flex:1;position:relative;border-radius:13px;padding:7px 8px;text-align:center;
   border:1.5px solid;overflow:hidden;transition:transform .08s,filter .15s}
 .bet:active{transform:scale(.97);filter:brightness(1.15)}
 .bet .dir{font-size:19px;font-weight:800;letter-spacing:.05em}
@@ -387,11 +389,11 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .bet.lo .dir,.bet.lo .pay{color:#8ccaf5}
 
 .cashBtn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;
-  padding:9px;border-radius:11px;font-size:14.5px;font-weight:700;letter-spacing:.06em;
+  padding:8px;border-radius:11px;font-size:14px;font-weight:700;letter-spacing:.06em;
   border:1.5px solid var(--gold);color:var(--gold);
   background:linear-gradient(180deg,rgba(232,194,104,.16),rgba(232,194,104,.05))}
 .cashBtn:active{transform:scale(.985);filter:brightness(1.2)}
-.hlWarn{text-align:center;font-size:10px;color:#c8886b;margin-top:5px;line-height:1.45}
+.hlWarn{text-align:center;font-size:9.5px;color:#c8886b;margin-top:4px;line-height:1.4}
 .hlResult{text-align:center;font-family:var(--f-ser);font-size:26px;letter-spacing:.1em;margin:12px 0 4px}
 .hlAnswer{text-align:center;font-size:11.5px;color:var(--dim);margin-bottom:10px;line-height:1.7}
 
@@ -407,12 +409,12 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 /* ---- 現在の能力パネル ---- */
 .statusCard{padding:9px 11px 9px}
 .stGrid{display:grid;grid-template-columns:1fr 1fr;gap:3px 12px}
-.stCell{display:flex;align-items:center;gap:6px;padding:2px 0}
+.stCell{display:flex;align-items:center;gap:6px;padding:1px 0}
 .stCell .ic{flex:none;opacity:.85}
 .stCell .lb{font-size:11px;color:var(--dim)}
 .stCell .gr{margin-left:auto;font-family:var(--f-num);font-size:12.5px}
-.stHead{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:7px;
-  padding-bottom:8px;border-bottom:1px solid rgba(232,194,104,.18)}
+.stHead{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:5px;
+  padding-bottom:6px;border-bottom:1px solid rgba(232,194,104,.18)}
 .stHead i{height:1px;flex:1;max-width:52px;
   background:linear-gradient(90deg,transparent,rgba(232,194,104,.75))}
 .stHead i:last-child{transform:scaleX(-1)}
@@ -421,7 +423,7 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
   background:linear-gradient(180deg,#fff6dc,#e8c268 55%,#b8902f);
   -webkit-background-clip:text;background-clip:text;color:transparent}
 .stFoot .sty{padding:1px 8px;border-radius:11px;font-size:10px}
-.stRow{display:flex;align-items:center;gap:8px;margin:4px 0}
+.stRow{display:flex;align-items:center;gap:8px;margin:2px 0}
 .stRow .ic{flex:none;opacity:.85}
 .stRow .lb{width:48px;font-size:11px;color:var(--dim);flex:none}
 .stRow .bar{flex:1;height:7px;background:#0a120e;border-radius:4px;overflow:hidden;
@@ -435,7 +437,7 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .stFoot .nx{color:var(--gold);font-family:var(--f-ser);font-size:13px;letter-spacing:.06em}
 
 /* ---- あきらめる ---- */
-.giveUp{display:block;width:100%;margin-top:14px;padding:13px;border-radius:10px;
+.giveUp{display:block;width:100%;margin-top:8px;padding:11px;border-radius:10px;
   border:1px solid rgba(200,136,107,.42);background:transparent;
   color:#9a7c5c;font-size:13px;font-weight:600;letter-spacing:.06em}
 .giveUp:active{background:rgba(200,136,107,.1)}
