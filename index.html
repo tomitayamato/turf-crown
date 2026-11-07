@@ -826,6 +826,26 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
    ループは Web Audio の AudioBufferSourceNode に任せる（<audio loop> だと
    AAC の符号化遅延ぶん曲の切れ目で音が途切れるため）。
    ===================================================================== */
+/* この版の刻印。?debug=1 の画面に出る。
+   ホーム画面に追加した iOS のアプリは HTML を強くキャッシュして、
+   古いまま起動し続けることがある。起動のたびに新しい版が出ていないか
+   確かめて、違っていたら読み直す。 */
+var BUILD = '20261107-1242';
+(function(){
+  try{
+    fetch(location.pathname + '?cb=' + Date.now(), {cache:'no-store'})
+      .then(function(r){ return r.text(); })
+      .then(function(t){
+        var m = t.match(/var BUILD = '([0-9A-Za-z.\-]+)'/);
+        if(!m || m[1] === BUILD) return;
+        var q = new URLSearchParams(location.search);
+        if(q.get('v') === m[1]) return;          /* 読み直しの無限ループ防止 */
+        q.set('v', m[1]);
+        location.replace(location.pathname + '?' + q.toString());
+      })['catch'](function(){});
+  }catch(e){}
+})();
+
 var BGM_SRC = {
   /* 育成中BGM  5708KB */
   train:'audio/train.wav',
@@ -3991,7 +4011,12 @@ G.showRaceResult=function(){
        +'#app        '+Math.round(app.width)+' x '+Math.round(app.height)+'  top '+Math.round(app.top)+'  bottom '+Math.round(app.bottom)+'\n'
        +'screen.on   '+(sc?sc.id+'  h'+sc.clientHeight+'  scroll+'+(sc.scrollHeight-sc.clientHeight):'-')+'\n'
        +'standalone  '+(navigator.standalone===true?'yes':(matchMedia('(display-mode:standalone)').matches?'yes(dm)':'no'))+'\n'
-       +'dpr         '+devicePixelRatio;
+       +'dpr         '+devicePixelRatio+'\n'
+       +'build       '+BUILD+'\n'
+       +'deadBottom  '+(function(){ if(!sc) return '-'; var b=0;
+            sc.querySelectorAll('*').forEach(function(el){var r=el.getBoundingClientRect();
+              if(r.height>2&&r.width>2&&r.bottom<=innerHeight+1&&r.bottom>b) b=r.bottom;});
+            return Math.round(innerHeight-b)+'px'; })();
     };
     dbg.style.display='block';
     upd(); setInterval(upd, 500);
