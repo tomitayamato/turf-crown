@@ -49,10 +49,20 @@ body{overflow:hidden}
   position:fixed; top:0; bottom:0; left:50%; transform:translateX(-50%);
   width:100%; max-width:460px;
   background:linear-gradient(180deg,#0c1511 0%,#0e1a14 50%,#0c1511 100%);
-  padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+  padding:env(safe-area-inset-top) 0 0;
   display:flex; flex-direction:column; overflow:hidden;
 }
-.screen{display:none; padding:16px 14px 12px; animation:fade .25s ease}
+.screen{display:none; padding:16px 14px 0; animation:fade .25s ease}
+/* 画面の最後の要素だけ、ホームバーに重ならないよう下に余白を取る。
+   ここで余白を取らずに #app 側で取ると、画面の下が丸ごと空いた帯になる */
+.screen.on > :last-child{margin-bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+/* 最後がスクロール領域の画面は、枠は画面の下まで伸ばし、
+   余白はその中に入れる。こうすると帯が消えて中身も全部読める */
+#s-race.on  > .raceScroll,
+#s-hall.on  > #hallBody,
+#s-howto.on > #howtoBody{margin-bottom:0;
+  padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+#s-title.on > .splash{margin-bottom:0}
 /* overflow は hidden ではなく auto にしておく。
    hidden だと入りきらなかったぶんがスクロールバーも出ずに切り落とされ、
    「下が塗りつぶされている」ように見えてしまう。
@@ -147,7 +157,7 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
 .splash-foot{
   /* 下端ギリギリだとブラウザのツールバーと干渉して押しにくい。
      ホームバーぶんの余白は #app 側ですでに取ってあるのでここでは足さない */
-  padding:188px 20px 32px;
+  padding:188px 20px calc(32px + env(safe-area-inset-bottom,0px));
   text-align:center;
   background:linear-gradient(to top,
     rgba(8,20,14,.97) 0%, rgba(8,20,14,.93) 26%,
@@ -718,6 +728,7 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
       <button class="btn ghost sm" style="width:auto;padding:7px 13px" onclick="G.show('title')">戻る</button></div>
     <div id="howtoBody"></div>
     <button class="btn ghost" onclick="G.show('title')">タイトルへ</button>
+
   </section>
 
   <!-- ========== 殿堂 ========== -->
@@ -830,7 +841,7 @@ button{font-family:inherit;font-size:inherit;color:inherit;border:0;background:n
    ホーム画面に追加した iOS のアプリは HTML を強くキャッシュして、
    古いまま起動し続けることがある。起動のたびに新しい版が出ていないか
    確かめて、違っていたら読み直す。 */
-var BUILD = '20261107-1242';
+var BUILD = '20261107-1257';
 (function(){
   try{
     fetch(location.pathname + '?cb=' + Date.now(), {cache:'no-store'})
@@ -3980,6 +3991,30 @@ G.showRaceResult=function(){
   BGM.on = BGM.loadPref();
   G.syncBgmBtn();
   BGM.play(BGM_SCREEN.title);
+  /* ホーム画面に追加すると ?debug=1 が落ちるので、
+     音楽ボタンの長押し（0.8秒）でも診断を出せるようにしておく */
+  (function(){
+    var b=document.getElementById('bgmBtn'), t=null;
+    if(!b) return;
+    var start=function(){ t=setTimeout(function(){
+      t=null;
+      var d=document.getElementById('dbg');
+      if(d.style.display==='block'){ d.style.display='none'; return; }
+      if(!window._dbgUpd){ var sc=document.createElement('script'); }
+      d.style.display='block';
+      if(window._dbgUpd) window._dbgUpd();
+      else { var q=new URLSearchParams(location.search); q.set('debug','1');
+             location.replace(location.pathname+'?'+q.toString()); }
+    }, 800); };
+    var cancel=function(){ if(t){ clearTimeout(t); t=null; } };
+    b.addEventListener('touchstart', start, {passive:true});
+    b.addEventListener('touchend', cancel);
+    b.addEventListener('touchmove', cancel);
+    b.addEventListener('mousedown', start);
+    b.addEventListener('mouseup', cancel);
+    b.addEventListener('mouseleave', cancel);
+  })();
+
   var unlock = function(){ BGM.unlock(); };
   document.addEventListener('pointerdown', unlock, true);
   document.addEventListener('touchstart', unlock, true);
@@ -4020,6 +4055,7 @@ G.showRaceResult=function(){
     };
     dbg.style.display='block';
     upd(); setInterval(upd, 500);
+    window._dbgUpd = upd;
     if(window.visualViewport) visualViewport.addEventListener('resize', upd);
     addEventListener('resize', upd);
   }
